@@ -39,9 +39,9 @@ public class WechatSecondTabFragment extends BaseMainFragment {
     }
 
     private void initView(View view) {
-        mToolbar = (Toolbar) view.findViewById(R.id.toolbar);
-        mTab = (TabLayout) view.findViewById(R.id.tab);
-        mViewPager = (ViewPager) view.findViewById(R.id.viewPager);
+        mToolbar = view.findViewById(R.id.toolbar);
+        mTab = view.findViewById(R.id.tab);
+        mViewPager = view.findViewById(R.id.viewPager);
 
         mToolbar.setTitle(R.string.discover);
 

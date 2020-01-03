@@ -9,15 +9,17 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.fragment.app.FragmentationMagician;
+import androidx.lifecycle.Lifecycle;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import me.yokeyword.fragmentation.exception.AfterSaveStateTransactionWarning;
 import me.yokeyword.fragmentation.helper.internal.ResultRecord;
 import me.yokeyword.fragmentation.helper.internal.TransactionRecord;
@@ -113,7 +115,10 @@ class TransactionDelegate {
                     ft.add(containerId, to, toName);
 
                     if (i != showPosition) {
+                        ft.setMaxLifecycle(to, Lifecycle.State.STARTED);
                         ft.hide(to);
+                    } else {
+                        ft.setMaxLifecycle(to, Lifecycle.State.RESUMED);
                     }
                 }
 
@@ -219,8 +224,8 @@ class TransactionDelegate {
             @Override
             public void run() {
                 FragmentTransaction ft = fm.beginTransaction()
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
-                        .remove(fragment);
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
+                    .remove(fragment);
 
                 if (showPreFragment) {
                     ISupportFragment preFragment = SupportHelper.getPreFragment(fragment);
@@ -252,9 +257,9 @@ class TransactionDelegate {
             ISupportFragment top = SupportHelper.getBackStackTopFragment(fm);
             if (top != null) {
                 fm.beginTransaction()
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
-                        .remove((Fragment) top)
-                        .commitAllowingStateLoss();
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
+                    .remove((Fragment) top)
+                    .commitAllowingStateLoss();
             }
         } catch (Exception ignored) {
 
@@ -407,7 +412,7 @@ class TransactionDelegate {
                 TransactionRecord record = to.getSupportDelegate().mTransactionRecord;
                 if (record != null && record.targetFragmentEnter != Integer.MIN_VALUE) {
                     ft.setCustomAnimations(record.targetFragmentEnter, record.currentFragmentPopExit,
-                            record.currentFragmentPopEnter, record.targetFragmentExit);
+                        record.currentFragmentPopEnter, record.targetFragmentExit);
                     args.putInt(FRAGMENTATION_ARG_CUSTOM_ENTER_ANIM, record.targetFragmentEnter);
                     args.putInt(FRAGMENTATION_ARG_CUSTOM_EXIT_ANIM, record.targetFragmentExit);
                     args.putInt(FRAGMENTATION_ARG_CUSTOM_POP_EXIT_ANIM, record.currentFragmentPopExit);
@@ -428,13 +433,14 @@ class TransactionDelegate {
             if (!addMode) {
                 ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                 args.putInt(FRAGMENTATION_ARG_ROOT_STATUS, allowRootFragmentAnim ?
-                        SupportFragmentDelegate.STATUS_ROOT_ANIM_ENABLE : SupportFragmentDelegate.STATUS_ROOT_ANIM_DISABLE);
+                    SupportFragmentDelegate.STATUS_ROOT_ANIM_ENABLE : SupportFragmentDelegate.STATUS_ROOT_ANIM_DISABLE);
             }
         } else {
             if (addMode) {
                 ft.add(from.getSupportDelegate().mContainerId, toF, toFragmentTag);
                 if (type != TYPE_ADD_WITHOUT_HIDE && type != TYPE_ADD_RESULT_WITHOUT_HIDE) {
                     ft.hide(fromF);
+                    ft.setMaxLifecycle(fromF, Lifecycle.State.STARTED);
                 }
             } else {
                 ft.replace(from.getSupportDelegate().mContainerId, toF, toFragmentTag);
@@ -451,6 +457,7 @@ class TransactionDelegate {
         if (showFragment == hideFragment) return;
 
         FragmentTransaction ft = fm.beginTransaction().show((Fragment) showFragment);
+        ft.setMaxLifecycle((Fragment) showFragment, Lifecycle.State.RESUMED);
 
         if (hideFragment == null) {
             List<Fragment> fragmentList = FragmentationMagician.getActiveFragments(fm);
@@ -458,11 +465,14 @@ class TransactionDelegate {
                 for (Fragment fragment : fragmentList) {
                     if (fragment != null && fragment != showFragment) {
                         ft.hide(fragment);
+                        ft.setMaxLifecycle(fragment, Lifecycle.State.STARTED);
                     }
                 }
             }
         } else {
             ft.hide((Fragment) hideFragment);
+            ft.setMaxLifecycle((Fragment) hideFragment, Lifecycle.State.STARTED);
+
         }
         supportCommit(fm, ft);
     }
@@ -562,7 +572,7 @@ class TransactionDelegate {
         mSupport.getSupportDelegate().mPopMultipleNoAnim = true;
 
         FragmentTransaction transaction = fm.beginTransaction()
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
+            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
         for (Fragment fragment : willPopFragments) {
             transaction.remove(fragment);
         }

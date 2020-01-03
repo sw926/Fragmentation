@@ -11,5 +11,6 @@ android {
 
 dependencies {
     compileOnly "androidx.appcompat:appcompat:$rootProject.appCompatVersion"
+    compileOnly 'com.jakewharton.timber:timber:4.7.1'
     api project(':fragmentation_core')
 }

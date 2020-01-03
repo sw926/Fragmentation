@@ -57,9 +57,9 @@ public class WechatFirstTabFragment extends BaseMainFragment implements SwipeRef
     }
 
     private void initView(View view) {
-        mToolbar = (Toolbar) view.findViewById(R.id.toolbar);
-        mRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refresh_layout);
-        mRecy = (RecyclerView) view.findViewById(R.id.recy);
+        mToolbar = view.findViewById(R.id.toolbar);
+        mRefreshLayout = view.findViewById(R.id.refresh_layout);
+        mRecy = view.findViewById(R.id.recy);
 
         EventBusActivityScope.getDefault(_mActivity).register(this);
 

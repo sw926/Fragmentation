@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import me.yokeyword.fragmentation.SupportFragment;
 import me.yokeyword.sample.R;
+import timber.log.Timber;
 
 /**
  * Created by YoKeyword on 16/6/30.

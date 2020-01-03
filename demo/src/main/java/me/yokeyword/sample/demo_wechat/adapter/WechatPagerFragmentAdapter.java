@@ -15,7 +15,7 @@ public class WechatPagerFragmentAdapter extends FragmentPagerAdapter {
     private String[] mTitles;
 
     public WechatPagerFragmentAdapter(FragmentManager fm, String... titles) {
-        super(fm);
+        super(fm, FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         mTitles = titles;
     }
 

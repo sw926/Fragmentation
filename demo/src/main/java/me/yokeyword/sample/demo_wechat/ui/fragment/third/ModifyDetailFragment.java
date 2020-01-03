@@ -53,10 +53,10 @@ public class ModifyDetailFragment extends BaseBackFragment {
     }
 
     private void initView(View view) {
-        mToolbar = (Toolbar) view.findViewById(R.id.toolbar);
-        mEtModiyTitle = (EditText) view.findViewById(R.id.et_modify_title);
-        mBtnModify = (Button) view.findViewById(R.id.btn_modify);
-        mBtnNext = (Button) view.findViewById(R.id.btn_next);
+        mToolbar = view.findViewById(R.id.toolbar);
+        mEtModiyTitle = view.findViewById(R.id.et_modify_title);
+        mBtnModify = view.findViewById(R.id.btn_modify);
+        mBtnNext = view.findViewById(R.id.btn_next);
 
         mToolbar.setTitle(R.string.start_result_test);
         initToolbarNav(mToolbar);
