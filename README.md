@@ -4,10 +4,10 @@
 [![Hex.pm](https://img.shields.io/hexpm/l/plug.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
 # PLEASE NOTE, THIS PROJECT IS NO LONGER BEING MAINTAINED
-
+****
 ### [中文版 README.md](https://github.com/YoKeyword/Fragmentation/blob/master/README_CN.md)
 
-# Fragmentation
+# FragmentationX
 
 ![](/gif/logo.png)
 
@@ -44,24 +44,24 @@ The first demo shows the basic usage of the library. The second one shows the wa
 <img src="/gif/stack.png" width="150px"/> <img src="/gif/log.png" width="300px"/>       <img src="/gif/SwipeBack.png" width="150px"/>
 
 ## How do I use Fragmentation?
-
+### Note: This is the use of androidx, if you are using the android.support, [click here `branch:master`](https://github.com/YoKeyword/Fragmentation/blob/master/README.md)
 **1、build.gradle**
 ````gradle
-// appcompat-v7 is required
-compile 'me.yokeyword:fragmentation:1.3.8'
+// This is the use of androidx, if you are using the android.support: fragmentationx -> fragmentation
+implementation 'me.yokeyword:fragmentationx:1.0.2'
 
 // If you don't want to extends SupportActivity/Fragment and would like to customize your own support, just rely on fragmentation-core
-// compile 'me.yokeyword:fragmentation-core:1.3.8'
+// implementation 'me.yokeyword:fragmentationx-core:1.0.2'
 
 // To get SwipeBack feature, rely on both fragmentation & fragmentation-swipeback
-compile 'me.yokeyword:fragmentation:1.3.8'
+implementation 'me.yokeyword:fragmentationx:1.0.2'
 // Swipeback is based on fragmentation. Refer to SwipeBackActivity/Fragment for your Customized SupportActivity/Fragment
-compile 'me.yokeyword:fragmentation-swipeback:1.3.8'
+implementation 'me.yokeyword:fragmentationx-swipeback:1.0.2'
 
 // To simplify the communication between Fragments.
-compile 'me.yokeyword:eventbus-activity-scope:1.1.0'
+implementation 'me.yokeyword:eventbus-activity-scope:1.1.0'
 // Your EventBus's version
-compile 'org.greenrobot:eventbus:{version}'
+implementation 'org.greenrobot:eventbus:{version}'
 ````
 
 **2. Activity `extends` SupportActivity or `implements` ISupportActivity：(refer to [MySupportActivity](https://github.com/YoKeyword/Fragmentation/blob/master/demo/src/main/java/me/yokeyword/sample/demo_flow/base/MySupportActivity.java))**

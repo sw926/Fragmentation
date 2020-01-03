@@ -7,10 +7,11 @@ Activity内Fragment数大于1时，滑动返回的是Fragment，否则滑动返�
 <img src="../gif/swipe.gif"/>
 
 # 如何使用
+### 注意：以下为androidx的使用方式，如果使用的是android.support包，[点击这里](https://github.com/YoKeyword/Fragmentation/blob/master/fragmentation_swipeback/README.md)
 1、项目下app的build.gradle中依赖：
 ````gradle
-compile 'me.yokeyword:fragmentation:1.3.8'
-compile 'me.yokeyword:fragmentation-swipeback:1.3.8'
+implementation 'me.yokeyword:fragmentationx:1.0.2'
+implementation 'me.yokeyword:fragmentationx-swipeback:1.0.2'
 ````
 
 2、如果Activity也需要支持SwipeBack，则继承SwipeBackActivity:
@@ -40,10 +41,10 @@ public class SwipeBackSampleFragment extends SwipeBackFragment {
 ````java
   getSwipeBackLayout().setEdgeOrientation(SwipeBackLayout.EDGE_RIGHT); // EDGE_LEFT(默认),EDGE_ALL
 
-  getSwipeBackLayout().setParallaxOffset(0.0f - 1.0f); // （类iOS）滑动退出视觉差，默认0.3
+  getSwipeBackLayout().setParallaxOffset(0.0f ~ 1.0f); // （类iOS）滑动退出视觉差，默认0.3
 
   setSwipeBackEnable(boolean enable); // 是否允许滑动
-  
+
   getSwipeBackLayout().setSwipeAlpha(0.0f ~ 1.0f); // 滑动中，设置上一个页面View的阴影透明程度度，默认0.5f
 
   getSwipeBackLayout().addSwipeListener(new SwipeBackLayout.OnSwipeListener() {

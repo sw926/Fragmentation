@@ -3,12 +3,6 @@ package me.yokeyword.fragmentation;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.FragmentationMagician;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +12,12 @@ import android.view.animation.AnimationUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.fragment.app.FragmentationMagician;
 import me.yokeyword.fragmentation.exception.AfterSaveStateTransactionWarning;
 import me.yokeyword.fragmentation.helper.internal.ResultRecord;
 import me.yokeyword.fragmentation.helper.internal.TransactionRecord;
@@ -170,12 +170,6 @@ class TransactionDelegate {
                 removeTopFragment(fm);
                 FragmentationMagician.popBackStackAllowingStateLoss(fm);
                 FragmentationMagician.executePendingTransactionsAllowingStateLoss(fm);
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        FragmentationMagician.reorderIndices(fm);
-                    }
-                });
             }
         });
 
@@ -375,8 +369,6 @@ class TransactionDelegate {
             dontAddToBackStack = transactionRecord.dontAddToBackStack;
             if (transactionRecord.sharedElementList != null) {
                 sharedElementList = transactionRecord.sharedElementList;
-                // Compat SharedElement
-                FragmentationMagician.reorderIndices(fm);
             }
         }
 
@@ -579,15 +571,6 @@ class TransactionDelegate {
         FragmentationMagician.popBackStackAllowingStateLoss(fm, fragmentTag, flag);
         FragmentationMagician.executePendingTransactionsAllowingStateLoss(fm);
         mSupport.getSupportDelegate().mPopMultipleNoAnim = false;
-
-        if (FragmentationMagician.isSupportLessThan25dot4()) {
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    FragmentationMagician.reorderIndices(fm);
-                }
-            });
-        }
     }
 
     private void mockPopToAnim(Fragment from, String targetFragmentTag, FragmentManager fm, int flag, List<Fragment> willPopFragments, int popAnim) {
