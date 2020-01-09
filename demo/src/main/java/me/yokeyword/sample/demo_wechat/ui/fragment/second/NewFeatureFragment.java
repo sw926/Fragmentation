@@ -66,23 +66,9 @@ public class NewFeatureFragment extends BaseBackFragment {
     }
 
     @Override
-    public void onLazyInitView(@Nullable Bundle savedInstanceState) {
-        super.onLazyInitView(savedInstanceState);
+    public void onResume() {
+        super.onResume();
         // 懒加载
         // 同级Fragment场景、ViewPager场景均适用
-    }
-
-    @Override
-    public void onSupportVisible() {
-        super.onSupportVisible();
-        // 当对用户可见时 回调
-        // 不管是 父Fragment还是子Fragment 都有效！
-    }
-
-    @Override
-    public void onSupportInvisible() {
-        super.onSupportInvisible();
-        // 当对用户不可见时 回调
-        // 不管是 父Fragment还是子Fragment 都有效！
     }
 }

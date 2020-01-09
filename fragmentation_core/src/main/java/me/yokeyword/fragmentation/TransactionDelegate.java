@@ -224,8 +224,8 @@ class TransactionDelegate {
             @Override
             public void run() {
                 FragmentTransaction ft = fm.beginTransaction()
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
-                    .remove(fragment);
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
+                        .remove(fragment);
 
                 if (showPreFragment) {
                     ISupportFragment preFragment = SupportHelper.getPreFragment(fragment);
@@ -257,9 +257,9 @@ class TransactionDelegate {
             ISupportFragment top = SupportHelper.getBackStackTopFragment(fm);
             if (top != null) {
                 fm.beginTransaction()
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
-                    .remove((Fragment) top)
-                    .commitAllowingStateLoss();
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
+                        .remove((Fragment) top)
+                        .commitAllowingStateLoss();
             }
         } catch (Exception ignored) {
 
@@ -412,7 +412,7 @@ class TransactionDelegate {
                 TransactionRecord record = to.getSupportDelegate().mTransactionRecord;
                 if (record != null && record.targetFragmentEnter != Integer.MIN_VALUE) {
                     ft.setCustomAnimations(record.targetFragmentEnter, record.currentFragmentPopExit,
-                        record.currentFragmentPopEnter, record.targetFragmentExit);
+                            record.currentFragmentPopEnter, record.targetFragmentExit);
                     args.putInt(FRAGMENTATION_ARG_CUSTOM_ENTER_ANIM, record.targetFragmentEnter);
                     args.putInt(FRAGMENTATION_ARG_CUSTOM_EXIT_ANIM, record.targetFragmentExit);
                     args.putInt(FRAGMENTATION_ARG_CUSTOM_POP_EXIT_ANIM, record.currentFragmentPopExit);
@@ -433,7 +433,7 @@ class TransactionDelegate {
             if (!addMode) {
                 ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                 args.putInt(FRAGMENTATION_ARG_ROOT_STATUS, allowRootFragmentAnim ?
-                    SupportFragmentDelegate.STATUS_ROOT_ANIM_ENABLE : SupportFragmentDelegate.STATUS_ROOT_ANIM_DISABLE);
+                        SupportFragmentDelegate.STATUS_ROOT_ANIM_ENABLE : SupportFragmentDelegate.STATUS_ROOT_ANIM_DISABLE);
             }
         } else {
             if (addMode) {
@@ -455,6 +455,10 @@ class TransactionDelegate {
 
     private void doShowHideFragment(FragmentManager fm, ISupportFragment showFragment, ISupportFragment hideFragment) {
         if (showFragment == hideFragment) return;
+
+        if (((Fragment) showFragment).isVisible() && !((Fragment) hideFragment).isVisible()) {
+            return;
+        }
 
         FragmentTransaction ft = fm.beginTransaction().show((Fragment) showFragment);
         ft.setMaxLifecycle((Fragment) showFragment, Lifecycle.State.RESUMED);
@@ -572,7 +576,7 @@ class TransactionDelegate {
         mSupport.getSupportDelegate().mPopMultipleNoAnim = true;
 
         FragmentTransaction transaction = fm.beginTransaction()
-            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
         for (Fragment fragment : willPopFragments) {
             transaction.remove(fragment);
         }

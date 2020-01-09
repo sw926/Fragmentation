@@ -29,4 +29,14 @@ public class OtherPagerFragment extends SupportFragment {
         View view = inflater.inflate(R.layout.wechat_fragment_tab_second_pager_other, container, false);
         return view;
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
 }

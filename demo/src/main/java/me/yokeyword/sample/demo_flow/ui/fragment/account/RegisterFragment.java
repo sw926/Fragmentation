@@ -86,12 +86,6 @@ public class RegisterFragment extends BaseBackFragment {
     }
 
     @Override
-    public void onSupportInvisible() {
-        super.onSupportInvisible();
-        hideSoftInput();
-    }
-
-    @Override
     public void onDetach() {
         super.onDetach();
         mOnLoginSuccessListener = null;

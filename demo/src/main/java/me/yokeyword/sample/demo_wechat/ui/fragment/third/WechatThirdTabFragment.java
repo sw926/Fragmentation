@@ -58,8 +58,8 @@ public class WechatThirdTabFragment extends BaseMainFragment {
 
 
     @Override
-    public void onLazyInitView(@Nullable Bundle savedInstanceState) {
-        super.onLazyInitView(savedInstanceState);
+    public void onResume() {
+        super.onResume();
         mAdapter = new HomeAdapter(_mActivity);
         LinearLayoutManager manager = new LinearLayoutManager(_mActivity);
         mRecy.setLayoutManager(manager);

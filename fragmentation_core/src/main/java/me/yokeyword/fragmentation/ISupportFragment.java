@@ -38,14 +38,6 @@ public interface ISupportFragment {
 
     void onEnterAnimationEnd(@Nullable Bundle savedInstanceState);
 
-    void onLazyInitView(@Nullable Bundle savedInstanceState);
-
-    void onSupportVisible();
-
-    void onSupportInvisible();
-
-    boolean isSupportVisible();
-
     FragmentAnimator onCreateFragmentAnimator();
 
     FragmentAnimator getFragmentAnimator();

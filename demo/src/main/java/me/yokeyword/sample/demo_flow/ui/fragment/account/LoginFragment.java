@@ -101,10 +101,4 @@ public class LoginFragment extends BaseBackFragment {
     public interface OnLoginSuccessListener {
         void onLoginSuccess(String account);
     }
-
-    @Override
-    public void onSupportInvisible() {
-        super.onSupportInvisible();
-        hideSoftInput();
-    }
 }

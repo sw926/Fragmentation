@@ -19,7 +19,7 @@ import me.yokeyword.fragmentation.anim.FragmentAnimator;
 import me.yokeyword.fragmentation.helper.internal.AnimatorHelper;
 import me.yokeyword.fragmentation.helper.internal.ResultRecord;
 import me.yokeyword.fragmentation.helper.internal.TransactionRecord;
-import me.yokeyword.fragmentation.helper.internal.VisibleDelegate;
+//import me.yokeyword.fragmentation.helper.internal.VisibleDelegate;
 
 public class SupportFragmentDelegate {
     private static final long NOT_FOUND_ANIM_TIME = 300L;
@@ -45,7 +45,7 @@ public class SupportFragmentDelegate {
     private TransactionDelegate mTransactionDelegate;
     TransactionRecord mTransactionRecord;
     // SupportVisible
-    private VisibleDelegate mVisibleDelegate;
+//    private VisibleDelegate mVisibleDelegate;
     Bundle mNewBundle;
     private Bundle mSaveInstanceState;
 
@@ -87,7 +87,7 @@ public class SupportFragmentDelegate {
     }
 
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        getVisibleDelegate().onCreate(savedInstanceState);
+//        getVisibleDelegate().onCreate(savedInstanceState);
 
         Bundle bundle = mFragment.getArguments();
         if (bundle != null) {
@@ -176,14 +176,14 @@ public class SupportFragmentDelegate {
     }
 
     public void onSaveInstanceState(Bundle outState) {
-        getVisibleDelegate().onSaveInstanceState(outState);
+//        getVisibleDelegate().onSaveInstanceState(outState);
         outState.putParcelable(TransactionDelegate.FRAGMENTATION_STATE_SAVE_ANIMATOR, mFragmentAnimator);
         outState.putBoolean(TransactionDelegate.FRAGMENTATION_STATE_SAVE_IS_HIDDEN, mFragment.isHidden());
         outState.putInt(TransactionDelegate.FRAGMENTATION_ARG_CONTAINER, mContainerId);
     }
 
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        getVisibleDelegate().onActivityCreated(savedInstanceState);
+//        getVisibleDelegate().onActivityCreated(savedInstanceState);
 
         View view = mFragment.getView();
         if (view != null) {
@@ -209,16 +209,16 @@ public class SupportFragmentDelegate {
     }
 
     public void onResume() {
-        getVisibleDelegate().onResume();
+//        getVisibleDelegate().onResume();
     }
 
     public void onPause() {
-        getVisibleDelegate().onPause();
+//        getVisibleDelegate().onPause();
     }
 
     public void onDestroyView() {
         mSupport.getSupportDelegate().mFragmentClickable = true;
-        getVisibleDelegate().onDestroyView();
+//        getVisibleDelegate().onDestroyView();
         getHandler().removeCallbacks(mNotifyEnterAnimEndRunnable);
     }
 
@@ -227,11 +227,11 @@ public class SupportFragmentDelegate {
     }
 
     public void onHiddenChanged(boolean hidden) {
-        getVisibleDelegate().onHiddenChanged(hidden);
+//        getVisibleDelegate().onHiddenChanged(hidden);
     }
 
     public void setUserVisibleHint(boolean isVisibleToUser) {
-        getVisibleDelegate().setUserVisibleHint(isVisibleToUser);
+//        getVisibleDelegate().setUserVisibleHint(isVisibleToUser);
     }
 
     /**
@@ -295,9 +295,9 @@ public class SupportFragmentDelegate {
     /**
      * Return true if the fragment has been supportVisible.
      */
-    final public boolean isSupportVisible() {
-        return getVisibleDelegate().isSupportVisible();
-    }
+//    final public boolean isSupportVisible() {
+//        return getVisibleDelegate().isSupportVisible();
+//    }
 
     /**
      * Set fragment animation with a higher priority than the ISupportActivity
@@ -645,12 +645,12 @@ public class SupportFragmentDelegate {
         return mHandler;
     }
 
-    public VisibleDelegate getVisibleDelegate() {
-        if (mVisibleDelegate == null) {
-            mVisibleDelegate = new VisibleDelegate(mSupportF);
-        }
-        return mVisibleDelegate;
-    }
+//    public VisibleDelegate getVisibleDelegate() {
+//        if (mVisibleDelegate == null) {
+//            mVisibleDelegate = new VisibleDelegate(mSupportF);
+//        }
+//        return mVisibleDelegate;
+//    }
 
     public FragmentActivity getActivity() {
         return _mActivity;

@@ -32,9 +32,8 @@ public class ZhihuThirdFragment extends BaseMainFragment {
     }
 
     @Override
-    public void onLazyInitView(@Nullable Bundle savedInstanceState) {
-        super.onLazyInitView(savedInstanceState);
-
+    public void onResume() {
+        super.onResume();
         if (findChildFragment(ShopFragment.class) == null) {
             // ShopFragment是flow包里的
             loadRootFragment(R.id.fl_third_container, ShopFragment.newInstance());

@@ -145,10 +145,10 @@ public class MySupportFragment extends Fragment implements ISupportFragment {
      * <p>
      * 同级下的 懒加载 ＋ ViewPager下的懒加载  的结合回调方法
      */
-    @Override
-    public void onLazyInitView(@Nullable Bundle savedInstanceState) {
-        mDelegate.onLazyInitView(savedInstanceState);
-    }
+//    @Override
+//    public void onLazyInitView(@Nullable Bundle savedInstanceState) {
+//        mDelegate.onLazyInitView(savedInstanceState);
+//    }
 
     /**
      * Called when the fragment is visible.
@@ -156,28 +156,28 @@ public class MySupportFragment extends Fragment implements ISupportFragment {
      * <p>
      * Is the combination of  [onHiddenChanged() + onResume()/onPause() + setUserVisibleHint()]
      */
-    @Override
-    public void onSupportVisible() {
-        mDelegate.onSupportVisible();
-    }
+//    @Override
+//    public void onSupportVisible() {
+//        mDelegate.onSupportVisible();
+//    }
 
     /**
      * Called when the fragment is invivible.
      * <p>
      * Is the combination of  [onHiddenChanged() + onResume()/onPause() + setUserVisibleHint()]
      */
-    @Override
-    public void onSupportInvisible() {
-        mDelegate.onSupportInvisible();
-    }
+//    @Override
+//    public void onSupportInvisible() {
+//        mDelegate.onSupportInvisible();
+//    }
 
     /**
      * Return true if the fragment has been supportVisible.
      */
-    @Override
-    final public boolean isSupportVisible() {
-        return mDelegate.isSupportVisible();
-    }
+//    @Override
+//    final public boolean isSupportVisible() {
+//        return mDelegate.isSupportVisible();
+//    }
 
     /**
      * Set fragment animation with a higher priority than the ISupportActivity

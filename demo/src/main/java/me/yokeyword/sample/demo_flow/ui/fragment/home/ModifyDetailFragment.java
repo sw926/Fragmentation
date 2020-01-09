@@ -83,10 +83,4 @@ public class ModifyDetailFragment extends BaseBackFragment {
             }
         });
     }
-
-    @Override
-    public void onSupportInvisible() {
-        super.onSupportInvisible();
-        hideSoftInput();
-    }
 }

@@ -67,8 +67,8 @@ public class WechatFirstTabFragment extends BaseMainFragment implements SwipeRef
     }
 
     @Override
-    public void onLazyInitView(@Nullable Bundle savedInstanceState) {
-        super.onLazyInitView(savedInstanceState);
+    public void onResume() {
+        super.onResume();
         mRefreshLayout.setOnRefreshListener(this);
 
         mRecy.setLayoutManager(new LinearLayoutManager(_mActivity));

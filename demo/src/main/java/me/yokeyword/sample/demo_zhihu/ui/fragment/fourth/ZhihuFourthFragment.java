@@ -36,8 +36,8 @@ public class ZhihuFourthFragment extends BaseMainFragment {
     }
 
     @Override
-    public void onLazyInitView(@Nullable Bundle savedInstanceState) {
-        super.onLazyInitView(savedInstanceState);
+    public void onResume() {
+        super.onResume();
         if (findChildFragment(AvatarFragment.class) == null) {
             loadFragment();
         }
