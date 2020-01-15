@@ -10,6 +10,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
@@ -453,11 +454,17 @@ class TransactionDelegate {
         supportCommit(fm, ft);
     }
 
-    private void doShowHideFragment(FragmentManager fm, ISupportFragment showFragment, ISupportFragment hideFragment) {
+    private void doShowHideFragment(FragmentManager fm, ISupportFragment showFragment, @Nullable ISupportFragment hideFragment) {
         if (showFragment == hideFragment) return;
 
-        if (((Fragment) showFragment).isVisible() && !((Fragment) hideFragment).isVisible()) {
-            return;
+        if (hideFragment != null) {
+            if (((Fragment) showFragment).isVisible() && !((Fragment) hideFragment).isVisible()) {
+                return;
+            }
+        } else {
+            if (((Fragment) showFragment).isVisible()) {
+                return;
+            }
         }
 
         FragmentTransaction ft = fm.beginTransaction().show((Fragment) showFragment);
