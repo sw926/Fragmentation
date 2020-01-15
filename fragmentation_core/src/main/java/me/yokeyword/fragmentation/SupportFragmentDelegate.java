@@ -58,7 +58,7 @@ public class SupportFragmentDelegate {
     EnterAnimListener mEnterAnimListener;
 
     private boolean mRootViewClickable;
-    private boolean mIsFirstOnReumeCalled = false;
+    private boolean mIsFirstOnResumeCalled = false;
 
     public SupportFragmentDelegate(ISupportFragment support) {
         if (!(support instanceof Fragment))
@@ -212,9 +212,9 @@ public class SupportFragmentDelegate {
 
     public void onResume() {
 //        getVisibleDelegate().onResume();
-        if (!mIsFirstOnReumeCalled) {
+        if (!mIsFirstOnResumeCalled) {
             mSupportF.onLazyFirstInit();
-            mIsFirstOnReumeCalled = false;
+            mIsFirstOnResumeCalled = true;
         }
     }
 
@@ -223,14 +223,14 @@ public class SupportFragmentDelegate {
     }
 
     public void onDestroyView() {
-        mIsFirstOnReumeCalled = false;
+        mIsFirstOnResumeCalled = false;
         mSupport.getSupportDelegate().mFragmentClickable = true;
 //        getVisibleDelegate().onDestroyView();
         getHandler().removeCallbacks(mNotifyEnterAnimEndRunnable);
     }
 
     public void onDestroy() {
-        mIsFirstOnReumeCalled = false;
+        mIsFirstOnResumeCalled = false;
         mTransactionDelegate.handleResultRecord(mFragment);
     }
 
