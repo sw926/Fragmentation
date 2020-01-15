@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+
 import me.yokeyword.fragmentation.anim.FragmentAnimator;
 import me.yokeyword.fragmentation.helper.internal.AnimatorHelper;
 import me.yokeyword.fragmentation.helper.internal.ResultRecord;
@@ -57,6 +58,7 @@ public class SupportFragmentDelegate {
     EnterAnimListener mEnterAnimListener;
 
     private boolean mRootViewClickable;
+    private boolean mIsFirstOnReumeCalled = false;
 
     public SupportFragmentDelegate(ISupportFragment support) {
         if (!(support instanceof Fragment))
@@ -210,6 +212,10 @@ public class SupportFragmentDelegate {
 
     public void onResume() {
 //        getVisibleDelegate().onResume();
+        if (!mIsFirstOnReumeCalled) {
+            mSupportF.onLazyFirstInit();
+            mIsFirstOnReumeCalled = false;
+        }
     }
 
     public void onPause() {
@@ -217,12 +223,14 @@ public class SupportFragmentDelegate {
     }
 
     public void onDestroyView() {
+        mIsFirstOnReumeCalled = false;
         mSupport.getSupportDelegate().mFragmentClickable = true;
 //        getVisibleDelegate().onDestroyView();
         getHandler().removeCallbacks(mNotifyEnterAnimEndRunnable);
     }
 
     public void onDestroy() {
+        mIsFirstOnReumeCalled = false;
         mTransactionDelegate.handleResultRecord(mFragment);
     }
 
@@ -266,38 +274,6 @@ public class SupportFragmentDelegate {
     public void onEnterAnimationEnd(Bundle savedInstanceState) {
     }
 
-    /**
-     * Lazy initial，Called when fragment is first visible.
-     * <p>
-     * 同级下的 懒加载 ＋ ViewPager下的懒加载  的结合回调方法
-     */
-    public void onLazyInitView(@Nullable Bundle savedInstanceState) {
-    }
-
-    /**
-     * Called when the fragment is visible.
-     * <p>
-     * 当Fragment对用户可见时回调
-     * <p>
-     * Is the combination of  [onHiddenChanged() + onResume()/onPause() + setUserVisibleHint()]
-     */
-    public void onSupportVisible() {
-    }
-
-    /**
-     * Called when the fragment is invivible.
-     * <p>
-     * Is the combination of  [onHiddenChanged() + onResume()/onPause() + setUserVisibleHint()]
-     */
-    public void onSupportInvisible() {
-    }
-
-    /**
-     * Return true if the fragment has been supportVisible.
-     */
-//    final public boolean isSupportVisible() {
-//        return getVisibleDelegate().isSupportVisible();
-//    }
 
     /**
      * Set fragment animation with a higher priority than the ISupportActivity

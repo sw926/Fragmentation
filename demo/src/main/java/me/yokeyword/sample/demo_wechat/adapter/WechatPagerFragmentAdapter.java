@@ -21,20 +21,20 @@ public class WechatPagerFragmentAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        if (position == 0) {
-            return FirstPagerFragment.newInstance();
+        if (position % 2 == 0) {
+            return FirstPagerFragment.newInstance(position);
         } else {
-            return OtherPagerFragment.newInstance();
+            return OtherPagerFragment.newInstance(position);
         }
     }
 
     @Override
     public int getCount() {
-        return mTitles.length;
+        return 10;
     }
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return mTitles[position];
+        return mTitles[position % 2];
     }
 }

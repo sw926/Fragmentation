@@ -357,4 +357,9 @@ public class MySupportFragment extends Fragment implements ISupportFragment {
     public <T extends ISupportFragment> T findChildFragment(Class<T> fragmentClass) {
         return SupportHelper.findFragment(getChildFragmentManager(), fragmentClass);
     }
+
+    @Override
+    public void onLazyFirstInit() {
+
+    }
 }

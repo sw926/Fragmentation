@@ -1,6 +1,7 @@
 package me.yokeyword.fragmentation;
 
 import android.os.Bundle;
+
 import androidx.annotation.IntDef;
 import androidx.annotation.Nullable;
 
@@ -53,4 +54,6 @@ public interface ISupportFragment {
     void putNewBundle(Bundle newBundle);
 
     boolean onBackPressedSupport();
+
+    void onLazyFirstInit();
 }

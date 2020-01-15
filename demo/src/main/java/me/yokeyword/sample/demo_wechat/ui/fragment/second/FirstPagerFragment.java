@@ -16,18 +16,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.yokeyword.eventbusactivityscope.EventBusActivityScope;
-import me.yokeyword.fragmentation.SupportFragment;
 import me.yokeyword.sample.R;
 import me.yokeyword.sample.demo_wechat.adapter.PagerAdapter;
 import me.yokeyword.sample.demo_wechat.event.TabSelectedEvent;
 import me.yokeyword.sample.demo_wechat.listener.OnItemClickListener;
 import me.yokeyword.sample.demo_wechat.ui.fragment.MainFragment;
-import timber.log.Timber;
 
 /**
  * Created by YoKeyword on 16/6/30.
  */
-public class FirstPagerFragment extends SupportFragment implements SwipeRefreshLayout.OnRefreshListener {
+public class FirstPagerFragment extends BasePagerFragment implements SwipeRefreshLayout.OnRefreshListener {
     private SwipeRefreshLayout mRefreshLayout;
     private RecyclerView mRecy;
     private PagerAdapter mAdapter;
@@ -35,9 +33,10 @@ public class FirstPagerFragment extends SupportFragment implements SwipeRefreshL
     private boolean mInAtTop = true;
     private int mScrollTotal;
 
-    public static FirstPagerFragment newInstance() {
+    public static FirstPagerFragment newInstance(int index) {
 
         Bundle args = new Bundle();
+        args.putInt("index", index);
 
         FirstPagerFragment fragment = new FirstPagerFragment();
         fragment.setArguments(args);

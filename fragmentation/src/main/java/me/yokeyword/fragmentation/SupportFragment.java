@@ -4,9 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 
 import androidx.annotation.NonNull;
@@ -14,7 +12,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import me.yokeyword.fragmentation.anim.FragmentAnimator;
-import timber.log.Timber;
 
 /**
  * Base class for activities that use the support-based
@@ -45,20 +42,17 @@ public class SupportFragment extends Fragment implements ISupportFragment {
         super.onAttach(activity);
         mDelegate.onAttach(activity);
         _mActivity = (SupportActivity) mDelegate.getActivity();
-        // Timber.tag(getClass().getSimpleName()).d("onAttach Activity");
     }
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        // Timber.tag(getClass().getSimpleName()).d("onAttach Context");
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mDelegate.onCreate(savedInstanceState);
-        Timber.tag(getClass().getSimpleName()).d("onCreate");
     }
 
     @Override
@@ -70,65 +64,67 @@ public class SupportFragment extends Fragment implements ISupportFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mDelegate.onActivityCreated(savedInstanceState);
-        // Timber.tag(getClass().getSimpleName()).d("onActivityCreated");
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Timber.tag(getClass().getSimpleName()).d("onViewCreated");
+
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         mDelegate.onSaveInstanceState(outState);
-        Timber.tag(getClass().getSimpleName()).d("onSaveInstanceState");
+
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
+
 
     @Override
     public void onResume() {
         super.onResume();
         mDelegate.onResume();
-        Timber.tag(getClass().getSimpleName()).d("onResume");
-        Timber.tag(getClass().getSimpleName() + "-" + "f_visible-New").d("onResume");
-
     }
 
     @Override
     public void onPause() {
         super.onPause();
         mDelegate.onPause();
-        Timber.tag(getClass().getSimpleName()).d("onPause");
-        Timber.tag(getClass().getSimpleName() + "-" + "f_visible-New").d("onPause");
     }
 
     @Override
     public void onDestroyView() {
         mDelegate.onDestroyView();
         super.onDestroyView();
-        Timber.tag(getClass().getSimpleName()).d("onDestroyView");
     }
 
     @Override
     public void onDestroy() {
         mDelegate.onDestroy();
         super.onDestroy();
-        Timber.tag(getClass().getSimpleName()).d("onDestroy");
     }
 
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         mDelegate.onHiddenChanged(hidden);
-        // Timber.tag(getClass().getSimpleName()).d("onHiddenChanged: hidden=%s", hidden);
     }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         mDelegate.setUserVisibleHint(isVisibleToUser);
-        Timber.tag(getClass().getSimpleName()).d("setUserVisibleHint: isVisibleToUser=%s", isVisibleToUser);
     }
 
     /**
@@ -176,7 +172,6 @@ public class SupportFragment extends Fragment implements ISupportFragment {
 //    @Override
 //    public void onLazyInitView(@Nullable Bundle savedInstanceState) {
 //        mDelegate.onLazyInitView(savedInstanceState);
-//        Timber.tag(getClass().getSimpleName() + "-" + "f_visible-New_Lazy").d("onLazyInitView");
 //    }
 
     /**
@@ -188,7 +183,6 @@ public class SupportFragment extends Fragment implements ISupportFragment {
 //    @Override
 //    public void onSupportVisible() {
 //        mDelegate.onSupportVisible();
-//        Timber.tag(getClass().getSimpleName() + "-" + "f_visible").d("onSupportVisible");
 //    }
 
     /**
@@ -199,7 +193,6 @@ public class SupportFragment extends Fragment implements ISupportFragment {
 //    @Override
 //    public void onSupportInvisible() {
 //        mDelegate.onSupportInvisible();
-//        Timber.tag(getClass().getSimpleName() + "-" + "f_visible").d("onSupportInvisible");
 //
 //    }
 
@@ -246,6 +239,10 @@ public class SupportFragment extends Fragment implements ISupportFragment {
     @Override
     public boolean onBackPressedSupport() {
         return mDelegate.onBackPressedSupport();
+    }
+
+    @Override
+    public void onLazyFirstInit() {
     }
 
     /**
