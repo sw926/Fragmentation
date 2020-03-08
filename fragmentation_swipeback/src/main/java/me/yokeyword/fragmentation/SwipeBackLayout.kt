@@ -1,146 +1,75 @@
-package me.yokeyword.fragmentation;
+package me.yokeyword.fragmentation
 
-import android.content.Context;
-import android.content.res.TypedArray;
-import android.graphics.Canvas;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
-import androidx.annotation.FloatRange;
-import androidx.annotation.IntDef;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.core.view.ViewCompat;
-import androidx.customview.widget.ViewDragHelper;
-import android.util.AttributeSet;
-import android.util.DisplayMetrics;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.FrameLayout;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-
-import androidx.fragment.app.FragmentationMagician;
-import me.yokeyword.fragmentation_swipeback.core.ISwipeBackActivity;
+import android.content.Context
+import android.graphics.Canvas
+import android.graphics.Rect
+import android.graphics.drawable.Drawable
+import android.util.AttributeSet
+import android.util.DisplayMetrics
+import android.view.MotionEvent
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
+import android.widget.FrameLayout
+import androidx.annotation.FloatRange
+import androidx.annotation.IntDef
+import androidx.core.view.ViewCompat
+import androidx.customview.widget.ViewDragHelper
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentationMagician
+import me.yokeyword.fragmentation_swipeback.R
+import me.yokeyword.fragmentation_swipeback.core.ISwipeBackActivity
+import java.lang.annotation.Retention
+import java.lang.annotation.RetentionPolicy
+import java.util.*
 
 /**
  * Thx https://github.com/ikew0ng/SwipeBackLayout.
- * <p>
+ *
+ *
  * Created by YoKey on 16/4/19.
  */
-public class SwipeBackLayout extends FrameLayout {
-    /**
-     * Edge flag indicating that the left edge should be affected.
-     */
-    public static final int EDGE_LEFT = ViewDragHelper.EDGE_LEFT;
-
-    /**
-     * Edge flag indicating that the right edge should be affected.
-     */
-    public static final int EDGE_RIGHT = ViewDragHelper.EDGE_RIGHT;
-
-    public static final int EDGE_ALL = EDGE_LEFT | EDGE_RIGHT;
-
-
-    /**
-     * A view is not currently being dragged or animating as a result of a
-     * fling/snap.
-     */
-    public static final int STATE_IDLE = ViewDragHelper.STATE_IDLE;
-
-    /**
-     * A view is currently being dragged. The position is currently changing as
-     * a result of user input or simulated user input.
-     */
-    public static final int STATE_DRAGGING = ViewDragHelper.STATE_DRAGGING;
-
-    /**
-     * A view is currently settling into place as a result of a fling or
-     * predefined non-interactive motion.
-     */
-    public static final int STATE_SETTLING = ViewDragHelper.STATE_SETTLING;
-
-    /**
-     * A view is currently drag finished.
-     */
-    public static final int STATE_FINISHED = 3;
-
-    private static final int DEFAULT_SCRIM_COLOR = 0x99000000;
-    private static final float DEFAULT_PARALLAX = 0.33f;
-    private static final int FULL_ALPHA = 255;
-    private static final float DEFAULT_SCROLL_THRESHOLD = 0.4f;
-    private static final int OVERSCROLL_DISTANCE = 10;
-
-    private float mScrollFinishThreshold = DEFAULT_SCROLL_THRESHOLD;
-
-    private ViewDragHelper mHelper;
-
-    private float mScrollPercent;
-    private float mScrimOpacity;
-
-    private FragmentActivity mActivity;
-    private View mContentView;
-    private ISupportFragment mFragment;
-    private Fragment mPreFragment;
-
-    private Drawable mShadowLeft;
-    private Drawable mShadowRight;
-    private Rect mTmpRect = new Rect();
-
-    private int mEdgeFlag;
-    private boolean mEnable = true;
-    private int mCurrentSwipeOrientation;
-    private float mParallaxOffset = DEFAULT_PARALLAX;
-
-    private boolean mCallOnDestroyView;
-
-    private boolean mInLayout;
-
-    private int mContentLeft;
-    private int mContentTop;
-    private float mSwipeAlpha = 0.5f;
-
-    /**
-     * The set of listeners to be sent events through.
-     */
-    private List<OnSwipeListener> mListeners;
-
-    private Context mContext;
-
-    public enum EdgeLevel {
-        MAX, MIN, MED
-    }
-
-    public SwipeBackLayout(Context context) {
-        this(context, null);
-    }
-
-    public SwipeBackLayout(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
-    }
-
-    public SwipeBackLayout(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        this.mContext = context;
-        init();
-    }
-
-    private void init() {
-        mHelper = ViewDragHelper.create(this, new ViewDragCallback());
-        setShadow(me.yokeyword.fragmentation_swipeback.R.drawable.shadow_left, EDGE_LEFT);
-        setEdgeOrientation(EDGE_LEFT);
-    }
+class SwipeBackLayout @JvmOverloads constructor(private val mContext: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : FrameLayout(mContext, attrs, defStyleAttr) {
+    private var mScrollFinishThreshold = DEFAULT_SCROLL_THRESHOLD
 
     /**
      * Get ViewDragHelper
      */
-    public ViewDragHelper getViewDragHelper() {
-        return mHelper;
+    var viewDragHelper: ViewDragHelper? = null
+        private set
+    private var mScrollPercent = 0f
+    private var mScrimOpacity = 0f
+    private var mActivity: FragmentActivity? = null
+    private var mContentView: View? = null
+    private var mFragment: ISupportFragment? = null
+    private var mPreFragment: Fragment? = null
+    private var mShadowLeft: Drawable? = null
+    private var mShadowRight: Drawable? = null
+    private val mTmpRect = Rect()
+    private var mEdgeFlag = 0
+    private var mEnable = true
+    private var mCurrentSwipeOrientation = 0
+    private var mParallaxOffset = DEFAULT_PARALLAX
+    private var mCallOnDestroyView = false
+    private var mInLayout = false
+    private var mContentLeft = 0
+    private var mContentTop = 0
+    private var mSwipeAlpha = 0.5f
+
+    /**
+     * The set of listeners to be sent events through.
+     */
+    private var mListeners: MutableList<OnSwipeListener>? = null
+
+    enum class EdgeLevel {
+        MAX, MIN, MED
+    }
+
+    private fun init() {
+        viewDragHelper = ViewDragHelper.create(this, ViewDragCallback())
+        setShadow(R.drawable.shadow_left, EDGE_LEFT)
+        setEdgeOrientation(EDGE_LEFT)
     }
 
     /**
@@ -148,8 +77,8 @@ public class SwipeBackLayout extends FrameLayout {
      *
      * @param alpha 0.0f:无阴影, 1.0f:较重的阴影, 默认:0.5f
      */
-    public void setSwipeAlpha(@FloatRange(from = 0.0f, to = 1.0f) float alpha) {
-        this.mSwipeAlpha = alpha;
+    fun setSwipeAlpha(@FloatRange(from = 0.0f, to = 1.0f) alpha: Float) {
+        mSwipeAlpha = alpha
     }
 
     /**
@@ -158,58 +87,55 @@ public class SwipeBackLayout extends FrameLayout {
      *
      * @param threshold
      */
-    public void setScrollThresHold(@FloatRange(from = 0.0f, to = 1.0f) float threshold) {
-        if (threshold >= 1.0f || threshold <= 0) {
-            throw new IllegalArgumentException("Threshold value should be between 0 and 1.0");
-        }
-        mScrollFinishThreshold = threshold;
+    fun setScrollThresHold(@FloatRange(from = 0.0f, to = 1.0f) threshold: Float) {
+        require(!(threshold >= 1.0f || threshold <= 0)) { "Threshold value should be between 0 and 1.0" }
+        mScrollFinishThreshold = threshold
     }
 
-    public void setParallaxOffset(float offset) {
-        this.mParallaxOffset = offset;
+    fun setParallaxOffset(offset: Float) {
+        mParallaxOffset = offset
     }
 
     /**
      * Enable edge tracking for the selected edges of the parent view.
-     * The callback's {@link ViewDragHelper.Callback#onEdgeTouched(int, int)} and
-     * {@link ViewDragHelper.Callback#onEdgeDragStarted(int, int)} methods will only be invoked
+     * The callback's [ViewDragHelper.Callback.onEdgeTouched] and
+     * [ViewDragHelper.Callback.onEdgeDragStarted] methods will only be invoked
      * for edges for which edge tracking has been enabled.
      *
      * @param orientation Combination of edge flags describing the edges to watch
-     * @see #EDGE_LEFT
-     * @see #EDGE_RIGHT
+     * @see .EDGE_LEFT
+     *
+     * @see .EDGE_RIGHT
      */
-    public void setEdgeOrientation(@EdgeOrientation int orientation) {
-        mEdgeFlag = orientation;
-        mHelper.setEdgeTrackingEnabled(orientation);
-
+    fun setEdgeOrientation(@EdgeOrientation orientation: Int) {
+        mEdgeFlag = orientation
+        viewDragHelper!!.setEdgeTrackingEnabled(orientation)
         if (orientation == EDGE_RIGHT || orientation == EDGE_ALL) {
-            setShadow(me.yokeyword.fragmentation_swipeback.R.drawable.shadow_right, EDGE_RIGHT);
+            setShadow(R.drawable.shadow_right, EDGE_RIGHT)
         }
     }
 
-    @IntDef({EDGE_LEFT, EDGE_RIGHT, EDGE_ALL})
+    @IntDef(EDGE_LEFT, EDGE_RIGHT, EDGE_ALL)
     @Retention(RetentionPolicy.SOURCE)
-    public @interface EdgeOrientation {
-    }
+    annotation class EdgeOrientation
 
     /**
      * Set a drawable used for edge shadow.
      */
-    public void setShadow(Drawable shadow, int edgeFlag) {
-        if ((edgeFlag & EDGE_LEFT) != 0) {
-            mShadowLeft = shadow;
-        } else if ((edgeFlag & EDGE_RIGHT) != 0) {
-            mShadowRight = shadow;
+    fun setShadow(shadow: Drawable?, edgeFlag: Int) {
+        if (edgeFlag and EDGE_LEFT != 0) {
+            mShadowLeft = shadow
+        } else if (edgeFlag and EDGE_RIGHT != 0) {
+            mShadowRight = shadow
         }
-        invalidate();
+        invalidate()
     }
 
     /**
      * Set a drawable used for edge shadow.
      */
-    public void setShadow(int resId, int edgeFlag) {
-        setShadow(getResources().getDrawable(resId), edgeFlag);
+    fun setShadow(resId: Int, edgeFlag: Int) {
+        setShadow(resources.getDrawable(resId), edgeFlag)
     }
 
     /**
@@ -217,11 +143,11 @@ public class SwipeBackLayout extends FrameLayout {
      *
      * @param listener the swipe listener to attach to this view
      */
-    public void addSwipeListener(OnSwipeListener listener) {
+    fun addSwipeListener(listener: OnSwipeListener) {
         if (mListeners == null) {
-            mListeners = new ArrayList<>();
+            mListeners = ArrayList()
         }
-        mListeners.add(listener);
+        mListeners!!.add(listener)
     }
 
     /**
@@ -229,116 +155,112 @@ public class SwipeBackLayout extends FrameLayout {
      *
      * @param listener
      */
-    public void removeSwipeListener(OnSwipeListener listener) {
+    fun removeSwipeListener(listener: OnSwipeListener) {
         if (mListeners == null) {
-            return;
+            return
         }
-        mListeners.remove(listener);
+        mListeners!!.remove(listener)
     }
 
-    public interface OnSwipeListener {
+    interface OnSwipeListener {
         /**
          * Invoke when state change
          *
          * @param state flag to describe scroll state
-         * @see #STATE_IDLE
-         * @see #STATE_DRAGGING
-         * @see #STATE_SETTLING
-         * @see #STATE_FINISHED
+         * @see .STATE_IDLE
+         *
+         * @see .STATE_DRAGGING
+         *
+         * @see .STATE_SETTLING
+         *
+         * @see .STATE_FINISHED
          */
-        void onDragStateChange(int state);
+        fun onDragStateChange(state: Int)
 
         /**
          * Invoke when edge touched
          *
          * @param oritentationEdgeFlag edge flag describing the edge being touched
-         * @see #EDGE_LEFT
-         * @see #EDGE_RIGHT
+         * @see .EDGE_LEFT
+         *
+         * @see .EDGE_RIGHT
          */
-        void onEdgeTouch(int oritentationEdgeFlag);
+        fun onEdgeTouch(oritentationEdgeFlag: Int)
 
         /**
          * Invoke when scroll percent over the threshold for the first time
          *
          * @param scrollPercent scroll percent of this view
          */
-        void onDragScrolled(float scrollPercent);
+        fun onDragScrolled(scrollPercent: Float)
     }
 
-    @Override
-    protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
-        boolean isDrawView = child == mContentView;
-        boolean drawChild = super.drawChild(canvas, child, drawingTime);
-        if (isDrawView && mScrimOpacity > 0 && mHelper.getViewDragState() != ViewDragHelper.STATE_IDLE) {
-            drawShadow(canvas, child);
-            drawScrim(canvas, child);
+    override fun drawChild(canvas: Canvas, child: View, drawingTime: Long): Boolean {
+        val isDrawView = child === mContentView
+        val drawChild = super.drawChild(canvas, child, drawingTime)
+        if (isDrawView && mScrimOpacity > 0 && viewDragHelper!!.viewDragState != ViewDragHelper.STATE_IDLE) {
+            drawShadow(canvas, child)
+            drawScrim(canvas, child)
         }
-        return drawChild;
+        return drawChild
     }
 
-    private void drawShadow(Canvas canvas, View child) {
-        final Rect childRect = mTmpRect;
-        child.getHitRect(childRect);
-
-        if ((mCurrentSwipeOrientation & EDGE_LEFT) != 0) {
-            mShadowLeft.setBounds(childRect.left - mShadowLeft.getIntrinsicWidth(), childRect.top, childRect.left, childRect.bottom);
-            mShadowLeft.setAlpha((int) (mScrimOpacity * FULL_ALPHA));
-            mShadowLeft.draw(canvas);
-        } else if ((mCurrentSwipeOrientation & EDGE_RIGHT) != 0) {
-            mShadowRight.setBounds(childRect.right, childRect.top, childRect.right + mShadowRight.getIntrinsicWidth(), childRect.bottom);
-            mShadowRight.setAlpha((int) (mScrimOpacity * FULL_ALPHA));
-            mShadowRight.draw(canvas);
+    private fun drawShadow(canvas: Canvas, child: View) {
+        val childRect = mTmpRect
+        child.getHitRect(childRect)
+        if (mCurrentSwipeOrientation and EDGE_LEFT != 0) {
+            mShadowLeft!!.setBounds(childRect.left - mShadowLeft!!.intrinsicWidth, childRect.top, childRect.left, childRect.bottom)
+            mShadowLeft!!.alpha = (mScrimOpacity * FULL_ALPHA).toInt()
+            mShadowLeft!!.draw(canvas)
+        } else if (mCurrentSwipeOrientation and EDGE_RIGHT != 0) {
+            mShadowRight!!.setBounds(childRect.right, childRect.top, childRect.right + mShadowRight!!.intrinsicWidth, childRect.bottom)
+            mShadowRight!!.alpha = (mScrimOpacity * FULL_ALPHA).toInt()
+            mShadowRight!!.draw(canvas)
         }
     }
 
-    private void drawScrim(Canvas canvas, View child) {
-        final int baseAlpha = (DEFAULT_SCRIM_COLOR & 0xff000000) >>> 24;
-        final int alpha = (int) (baseAlpha * mScrimOpacity * mSwipeAlpha);
-        final int color = alpha << 24;
-
-        if ((mCurrentSwipeOrientation & EDGE_LEFT) != 0) {
-            canvas.clipRect(0, 0, child.getLeft(), getHeight());
-        } else if ((mCurrentSwipeOrientation & EDGE_RIGHT) != 0) {
-            canvas.clipRect(child.getRight(), 0, getRight(), getHeight());
+    private fun drawScrim(canvas: Canvas, child: View) {
+        val baseAlpha = DEFAULT_SCRIM_COLOR and -0x1000000 ushr 24
+        val alpha = (baseAlpha * mScrimOpacity * mSwipeAlpha).toInt()
+        val color = alpha shl 24
+        if (mCurrentSwipeOrientation and EDGE_LEFT != 0) {
+            canvas.clipRect(0, 0, child.left, height)
+        } else if (mCurrentSwipeOrientation and EDGE_RIGHT != 0) {
+            canvas.clipRect(child.right, 0, right, height)
         }
-        canvas.drawColor(color);
+        canvas.drawColor(color)
     }
 
-    @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        mInLayout = true;
+    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+        mInLayout = true
         if (mContentView != null) {
-            mContentView.layout(mContentLeft, mContentTop,
-                    mContentLeft + mContentView.getMeasuredWidth(),
-                    mContentTop + mContentView.getMeasuredHeight());
+            mContentView!!.layout(mContentLeft, mContentTop,
+                    mContentLeft + mContentView!!.measuredWidth,
+                    mContentTop + mContentView!!.measuredHeight)
         }
-        mInLayout = false;
+        mInLayout = false
     }
 
-    @Override
-    public void requestLayout() {
+    override fun requestLayout() {
         if (!mInLayout) {
-            super.requestLayout();
+            super.requestLayout()
         }
     }
 
-    @Override
-    public void computeScroll() {
-        mScrimOpacity = 1 - mScrollPercent;
+    override fun computeScroll() {
+        mScrimOpacity = 1 - mScrollPercent
         if (mScrimOpacity >= 0) {
-            if (mHelper.continueSettling(true)) {
-                ViewCompat.postInvalidateOnAnimation(this);
+            if (viewDragHelper!!.continueSettling(true)) {
+                ViewCompat.postInvalidateOnAnimation(this)
             }
-
-            if (mPreFragment != null && mPreFragment.getView() != null) {
+            if (mPreFragment != null && mPreFragment!!.view != null) {
                 if (mCallOnDestroyView) {
-                    mPreFragment.getView().setX(0);
-                    return;
+                    mPreFragment!!.view!!.x = 0f
+                    return
                 }
-
-                if (mHelper.getCapturedView() != null) {
-                    int leftOffset = (int) ((mHelper.getCapturedView().getLeft() - getWidth()) * mParallaxOffset * mScrimOpacity);
-                    mPreFragment.getView().setX(leftOffset > 0 ? 0 : leftOffset);
+                if (viewDragHelper!!.capturedView != null) {
+                    val leftOffset = ((viewDragHelper!!.capturedView!!.left - width) * mParallaxOffset * mScrimOpacity).toInt()
+                    mPreFragment!!.view!!.setX(if (leftOffset > 0) 0 else leftOffset.toFloat())
                 }
             }
         }
@@ -347,250 +269,276 @@ public class SwipeBackLayout extends FrameLayout {
     /**
      * hide
      */
-    public void internalCallOnDestroyView() {
-        mCallOnDestroyView = true;
+    fun internalCallOnDestroyView() {
+        mCallOnDestroyView = true
     }
 
-    public void setFragment(final ISupportFragment fragment, View view) {
-        this.mFragment = fragment;
-        mContentView = view;
+    fun setFragment(fragment: ISupportFragment?, view: View?) {
+        mFragment = fragment
+        mContentView = view
     }
 
-    public void hiddenFragment() {
-        if (mPreFragment != null && mPreFragment.getView() != null) {
-            mPreFragment.getView().setVisibility(GONE);
+    fun hiddenFragment() {
+        if (mPreFragment != null && mPreFragment!!.view != null) {
+            mPreFragment!!.view!!.visibility = View.GONE
         }
     }
 
-    public void attachToActivity(FragmentActivity activity) {
-        mActivity = activity;
-        TypedArray a = activity.getTheme().obtainStyledAttributes(new int[]{
+    fun attachToActivity(activity: FragmentActivity) {
+        mActivity = activity
+        val a = activity.theme.obtainStyledAttributes(intArrayOf(
                 android.R.attr.windowBackground
-        });
-        int background = a.getResourceId(0, 0);
-        a.recycle();
-
-        ViewGroup decor = (ViewGroup) activity.getWindow().getDecorView();
-        ViewGroup decorChild = (ViewGroup) decor.getChildAt(0);
-        decorChild.setBackgroundResource(background);
-        decor.removeView(decorChild);
-        addView(decorChild);
-        setContentView(decorChild);
-        decor.addView(this);
+        ))
+        val background = a.getResourceId(0, 0)
+        a.recycle()
+        val decor = activity.window.decorView as ViewGroup
+        val decorChild = decor.getChildAt(0) as ViewGroup
+        decorChild.setBackgroundResource(background)
+        decor.removeView(decorChild)
+        addView(decorChild)
+        setContentView(decorChild)
+        decor.addView(this)
     }
 
-    public void attachToFragment(ISupportFragment fragment, View view) {
-        addView(view);
-        setFragment(fragment, view);
+    fun attachToFragment(fragment: ISupportFragment?, view: View?) {
+        addView(view)
+        setFragment(fragment, view)
     }
 
-    private void setContentView(View view) {
-        mContentView = view;
+    private fun setContentView(view: View) {
+        mContentView = view
     }
 
-    public void setEnableGesture(boolean enable) {
-        mEnable = enable;
+    fun setEnableGesture(enable: Boolean) {
+        mEnable = enable
     }
 
-    public void setEdgeLevel(EdgeLevel edgeLevel) {
-        validateEdgeLevel(-1, edgeLevel);
+    fun setEdgeLevel(edgeLevel: EdgeLevel?) {
+        validateEdgeLevel(-1, edgeLevel)
     }
 
-    public void setEdgeLevel(int widthPixel) {
-        validateEdgeLevel(widthPixel, null);
+    fun setEdgeLevel(widthPixel: Int) {
+        validateEdgeLevel(widthPixel, null)
     }
 
-    private void validateEdgeLevel(int widthPixel, EdgeLevel edgeLevel) {
+    private fun validateEdgeLevel(widthPixel: Int, edgeLevel: EdgeLevel?) {
         try {
-            DisplayMetrics metrics = new DisplayMetrics();
-            WindowManager windowManager = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
-            windowManager.getDefaultDisplay().getMetrics(metrics);
-            Field mEdgeSize = mHelper.getClass().getDeclaredField("mEdgeSize");
-            mEdgeSize.setAccessible(true);
+            val metrics = DisplayMetrics()
+            val windowManager = mContext.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+            windowManager.defaultDisplay.getMetrics(metrics)
+            val mEdgeSize = viewDragHelper!!.javaClass.getDeclaredField("mEdgeSize")
+            mEdgeSize.isAccessible = true
             if (widthPixel >= 0) {
-                mEdgeSize.setInt(mHelper, widthPixel);
+                mEdgeSize.setInt(viewDragHelper, widthPixel)
             } else {
                 if (edgeLevel == EdgeLevel.MAX) {
-                    mEdgeSize.setInt(mHelper, metrics.widthPixels);
+                    mEdgeSize.setInt(viewDragHelper, metrics.widthPixels)
                 } else if (edgeLevel == EdgeLevel.MED) {
-                    mEdgeSize.setInt(mHelper, metrics.widthPixels / 2);
+                    mEdgeSize.setInt(viewDragHelper, metrics.widthPixels / 2)
                 } else {
-                    mEdgeSize.setInt(mHelper, ((int) (20 * metrics.density + 0.5f)));
+                    mEdgeSize.setInt(viewDragHelper, (20 * metrics.density + 0.5f).toInt())
                 }
             }
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
+        } catch (e: NoSuchFieldException) {
+            e.printStackTrace()
+        } catch (e: IllegalAccessException) {
+            e.printStackTrace()
         }
     }
 
-    private class ViewDragCallback extends ViewDragHelper.Callback {
-
-        @Override
-        public boolean tryCaptureView(View child, int pointerId) {
-            boolean dragEnable = mHelper.isEdgeTouched(mEdgeFlag, pointerId);
+    private inner class ViewDragCallback : ViewDragHelper.Callback() {
+        override fun tryCaptureView(child: View, pointerId: Int): Boolean {
+            val dragEnable = viewDragHelper!!.isEdgeTouched(mEdgeFlag, pointerId)
             if (dragEnable) {
-                if (mHelper.isEdgeTouched(EDGE_LEFT, pointerId)) {
-                    mCurrentSwipeOrientation = EDGE_LEFT;
-                } else if (mHelper.isEdgeTouched(EDGE_RIGHT, pointerId)) {
-                    mCurrentSwipeOrientation = EDGE_RIGHT;
+                if (viewDragHelper!!.isEdgeTouched(EDGE_LEFT, pointerId)) {
+                    mCurrentSwipeOrientation = EDGE_LEFT
+                } else if (viewDragHelper!!.isEdgeTouched(EDGE_RIGHT, pointerId)) {
+                    mCurrentSwipeOrientation = EDGE_RIGHT
                 }
-
                 if (mListeners != null) {
-                    for (OnSwipeListener listener : mListeners) {
-                        listener.onEdgeTouch(mCurrentSwipeOrientation);
+                    for (listener in mListeners!!) {
+                        listener.onEdgeTouch(mCurrentSwipeOrientation)
                     }
                 }
-
                 if (mPreFragment == null) {
                     if (mFragment != null) {
-                        List<Fragment> fragmentList = FragmentationMagician.getActiveFragments(((Fragment) mFragment).getFragmentManager());
-                        if (fragmentList != null && fragmentList.size() > 1) {
-                            int index = fragmentList.indexOf(mFragment);
-                            for (int i = index - 1; i >= 0; i--) {
-                                Fragment fragment = fragmentList.get(i);
-                                if (fragment != null && fragment.getView() != null) {
-                                    fragment.getView().setVisibility(VISIBLE);
-                                    mPreFragment = fragment;
-                                    break;
+                        val fragmentList = FragmentationMagician.getActiveFragments((mFragment as Fragment).fragmentManager)
+                        if (fragmentList != null && fragmentList.size > 1) {
+                            val index = fragmentList.indexOf(mFragment)
+                            for (i in index - 1 downTo 0) {
+                                val fragment = fragmentList[i]
+                                if (fragment != null && fragment.view != null) {
+                                    fragment.view!!.visibility = View.VISIBLE
+                                    mPreFragment = fragment
+                                    break
                                 }
                             }
                         }
                     }
                 } else {
-                    View preView = mPreFragment.getView();
-                    if (preView != null && preView.getVisibility() != VISIBLE) {
-                        preView.setVisibility(VISIBLE);
+                    val preView = mPreFragment!!.view
+                    if (preView != null && preView.visibility != View.VISIBLE) {
+                        preView.visibility = View.VISIBLE
                     }
                 }
             }
-            return dragEnable;
+            return dragEnable
         }
 
-        @Override
-        public int clampViewPositionHorizontal(View child, int left, int dx) {
-            int ret = 0;
-            if ((mCurrentSwipeOrientation & EDGE_LEFT) != 0) {
-                ret = Math.min(child.getWidth(), Math.max(left, 0));
-            } else if ((mCurrentSwipeOrientation & EDGE_RIGHT) != 0) {
-                ret = Math.min(0, Math.max(left, -child.getWidth()));
+        override fun clampViewPositionHorizontal(child: View, left: Int, dx: Int): Int {
+            var ret = 0
+            if (mCurrentSwipeOrientation and EDGE_LEFT != 0) {
+                ret = Math.min(child.width, Math.max(left, 0))
+            } else if (mCurrentSwipeOrientation and EDGE_RIGHT != 0) {
+                ret = Math.min(0, Math.max(left, -child.width))
             }
-            return ret;
+            return ret
         }
 
-        @Override
-        public void onViewPositionChanged(View changedView, int left, int top, int dx, int dy) {
-            super.onViewPositionChanged(changedView, left, top, dx, dy);
-
-            if ((mCurrentSwipeOrientation & EDGE_LEFT) != 0) {
-                mScrollPercent = Math.abs((float) left / (mContentView.getWidth() + mShadowLeft.getIntrinsicWidth()));
-            } else if ((mCurrentSwipeOrientation & EDGE_RIGHT) != 0) {
-                mScrollPercent = Math.abs((float) left / (mContentView.getWidth() + mShadowRight.getIntrinsicWidth()));
+        override fun onViewPositionChanged(changedView: View, left: Int, top: Int, dx: Int, dy: Int) {
+            super.onViewPositionChanged(changedView, left, top, dx, dy)
+            if (mCurrentSwipeOrientation and EDGE_LEFT != 0) {
+                mScrollPercent = Math.abs(left.toFloat() / (mContentView!!.width + mShadowLeft!!.intrinsicWidth))
+            } else if (mCurrentSwipeOrientation and EDGE_RIGHT != 0) {
+                mScrollPercent = Math.abs(left.toFloat() / (mContentView!!.width + mShadowRight!!.intrinsicWidth))
             }
-            mContentLeft = left;
-            mContentTop = top;
-            invalidate();
-
-            if (mListeners != null && mHelper.getViewDragState() == STATE_DRAGGING && mScrollPercent <= 1 && mScrollPercent > 0) {
-                for (OnSwipeListener listener : mListeners) {
-                    listener.onDragScrolled(mScrollPercent);
+            mContentLeft = left
+            mContentTop = top
+            invalidate()
+            if (mListeners != null && viewDragHelper!!.viewDragState == STATE_DRAGGING && mScrollPercent <= 1 && mScrollPercent > 0) {
+                for (listener in mListeners!!) {
+                    listener.onDragScrolled(mScrollPercent)
                 }
             }
-
             if (mScrollPercent > 1) {
                 if (mFragment != null) {
-                    if (mCallOnDestroyView) return;
-
-                    if (!((Fragment) mFragment).isDetached()) {
-                        onDragFinished();
-                        mFragment.getSupportDelegate().popQuiet();
+                    if (mCallOnDestroyView) return
+                    if (!(mFragment as Fragment).isDetached) {
+                        onDragFinished()
+                        mFragment.getSupportDelegate().popQuiet()
                     }
                 } else {
-                    if (!mActivity.isFinishing()) {
-                        onDragFinished();
-                        mActivity.finish();
-                        mActivity.overridePendingTransition(0, 0);
+                    if (!mActivity!!.isFinishing) {
+                        onDragFinished()
+                        mActivity!!.finish()
+                        mActivity!!.overridePendingTransition(0, 0)
                     }
                 }
             }
         }
 
-        @Override
-        public int getViewHorizontalDragRange(View child) {
+        override fun getViewHorizontalDragRange(child: View): Int {
             if (mFragment != null) {
-                return 1;
+                return 1
             }
-            if (mActivity instanceof ISwipeBackActivity && ((ISwipeBackActivity) mActivity).swipeBackPriority()) {
-                return 1;
-            }
-            return 0;
+            return if (mActivity is ISwipeBackActivity && (mActivity as ISwipeBackActivity).swipeBackPriority()) {
+                1
+            } else 0
         }
 
-        @Override
-        public void onViewReleased(View releasedChild, float xvel, float yvel) {
-            final int childWidth = releasedChild.getWidth();
-
-            int left = 0, top = 0;
-            if ((mCurrentSwipeOrientation & EDGE_LEFT) != 0) {
-                left = xvel > 0 || xvel == 0 && mScrollPercent > mScrollFinishThreshold ? (childWidth
-                        + mShadowLeft.getIntrinsicWidth() + OVERSCROLL_DISTANCE) : 0;
-            } else if ((mCurrentSwipeOrientation & EDGE_RIGHT) != 0) {
-                left = xvel < 0 || xvel == 0 && mScrollPercent > mScrollFinishThreshold ? -(childWidth
-                        + mShadowRight.getIntrinsicWidth() + OVERSCROLL_DISTANCE) : 0;
+        override fun onViewReleased(releasedChild: View, xvel: Float, yvel: Float) {
+            val childWidth = releasedChild.width
+            var left = 0
+            val top = 0
+            if (mCurrentSwipeOrientation and EDGE_LEFT != 0) {
+                left = if (xvel > 0 || xvel == 0f && mScrollPercent > mScrollFinishThreshold) childWidth
+                + mShadowLeft!!.intrinsicWidth + OVERSCROLL_DISTANCE else 0
+            } else if (mCurrentSwipeOrientation and EDGE_RIGHT != 0) {
+                left = if (xvel < 0 || xvel == 0f && mScrollPercent > mScrollFinishThreshold) -(childWidth
+                        + mShadowRight!!.intrinsicWidth + OVERSCROLL_DISTANCE) else 0
             }
-
-            mHelper.settleCapturedViewAt(left, top);
-            invalidate();
+            viewDragHelper!!.settleCapturedViewAt(left, top)
+            invalidate()
         }
 
-        @Override
-        public void onViewDragStateChanged(int state) {
-            super.onViewDragStateChanged(state);
+        override fun onViewDragStateChanged(state: Int) {
+            super.onViewDragStateChanged(state)
             if (mListeners != null) {
-                for (OnSwipeListener listener : mListeners) {
-                    listener.onDragStateChange(state);
+                for (listener in mListeners!!) {
+                    listener.onDragStateChange(state)
                 }
             }
         }
 
-        @Override
-        public void onEdgeTouched(int edgeFlags, int pointerId) {
-            super.onEdgeTouched(edgeFlags, pointerId);
-            if ((mEdgeFlag & edgeFlags) != 0) {
-                mCurrentSwipeOrientation = edgeFlags;
+        override fun onEdgeTouched(edgeFlags: Int, pointerId: Int) {
+            super.onEdgeTouched(edgeFlags, pointerId)
+            if (mEdgeFlag and edgeFlags != 0) {
+                mCurrentSwipeOrientation = edgeFlags
             }
         }
     }
 
-    private void onDragFinished() {
+    private fun onDragFinished() {
         if (mListeners != null) {
-            for (OnSwipeListener listener : mListeners) {
-                listener.onDragStateChange(STATE_FINISHED);
+            for (listener in mListeners!!) {
+                listener.onDragStateChange(STATE_FINISHED)
             }
         }
     }
 
-    @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (!mEnable) return super.onInterceptTouchEvent(ev);
+    override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
+        if (!mEnable) return super.onInterceptTouchEvent(ev)
         try {
-            return mHelper.shouldInterceptTouchEvent(ev);
-        } catch (Exception ignored) {
-            ignored.printStackTrace();
+            return viewDragHelper!!.shouldInterceptTouchEvent(ev)
+        } catch (ignored: Exception) {
+            ignored.printStackTrace()
         }
-        return false;
+        return false
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        if (!mEnable) return super.onTouchEvent(event);
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        if (!mEnable) return super.onTouchEvent(event)
         try {
-            mHelper.processTouchEvent(event);
-            return true;
-        } catch (Exception ignored) {
-            ignored.printStackTrace();
+            viewDragHelper!!.processTouchEvent(event)
+            return true
+        } catch (ignored: Exception) {
+            ignored.printStackTrace()
         }
-        return false;
+        return false
+    }
+
+    companion object {
+        /**
+         * Edge flag indicating that the left edge should be affected.
+         */
+        const val EDGE_LEFT = ViewDragHelper.EDGE_LEFT
+
+        /**
+         * Edge flag indicating that the right edge should be affected.
+         */
+        const val EDGE_RIGHT = ViewDragHelper.EDGE_RIGHT
+        const val EDGE_ALL = EDGE_LEFT or EDGE_RIGHT
+
+        /**
+         * A view is not currently being dragged or animating as a result of a
+         * fling/snap.
+         */
+        const val STATE_IDLE = ViewDragHelper.STATE_IDLE
+
+        /**
+         * A view is currently being dragged. The position is currently changing as
+         * a result of user input or simulated user input.
+         */
+        const val STATE_DRAGGING = ViewDragHelper.STATE_DRAGGING
+
+        /**
+         * A view is currently settling into place as a result of a fling or
+         * predefined non-interactive motion.
+         */
+        const val STATE_SETTLING = ViewDragHelper.STATE_SETTLING
+
+        /**
+         * A view is currently drag finished.
+         */
+        const val STATE_FINISHED = 3
+        private const val DEFAULT_SCRIM_COLOR = -0x67000000
+        private const val DEFAULT_PARALLAX = 0.33f
+        private const val FULL_ALPHA = 255
+        private const val DEFAULT_SCROLL_THRESHOLD = 0.4f
+        private const val OVERSCROLL_DISTANCE = 10
+    }
+
+    init {
+        init()
     }
 }
