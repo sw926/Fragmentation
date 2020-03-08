@@ -1,57 +1,53 @@
+package me.yokeyword.fragmentation_swipeback
 
-package me.yokeyword.fragmentation_swipeback;
-
-import android.os.Bundle;
-
-import me.yokeyword.fragmentation.SupportActivity;
-import me.yokeyword.fragmentation.SwipeBackLayout;
-import me.yokeyword.fragmentation_swipeback.core.ISwipeBackActivity;
-import me.yokeyword.fragmentation_swipeback.core.SwipeBackActivityDelegate;
-
+import android.os.Bundle
+import me.yokeyword.fragmentation.SupportActivity
+import me.yokeyword.fragmentation.SwipeBackLayout
+import me.yokeyword.fragmentation.SwipeBackLayout.EdgeLevel
+import me.yokeyword.fragmentation_swipeback.core.ISwipeBackActivity
+import me.yokeyword.fragmentation_swipeback.core.SwipeBackActivityDelegate
 
 /**
- * You can also refer to {@link SwipeBackActivity} to implement YourSwipeBackActivity
- * (extends Activity and impl {@link me.yokeyword.fragmentation.ISupportActivity})
- * <p>
+ * You can also refer to [SwipeBackActivity] to implement YourSwipeBackActivity
+ * (extends Activity and impl [me.yokeyword.fragmentation.ISupportActivity])
+ *
+ *
  * Created by YoKey on 16/4/19.
  */
-public class SwipeBackActivity extends SupportActivity implements ISwipeBackActivity {
-    final SwipeBackActivityDelegate mDelegate = new SwipeBackActivityDelegate(this);
+open class SwipeBackActivity : SupportActivity(), ISwipeBackActivity {
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mDelegate.onCreate(savedInstanceState);
+    private lateinit var mDelegate: SwipeBackActivityDelegate
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        mDelegate = SwipeBackActivityDelegate(this)
+        mDelegate.onCreate(savedInstanceState)
     }
 
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        mDelegate.onPostCreate(savedInstanceState);
+    override fun onPostCreate(savedInstanceState: Bundle?) {
+        super.onPostCreate(savedInstanceState)
+        mDelegate.onPostCreate(savedInstanceState)
     }
 
-    @Override
-    public SwipeBackLayout getSwipeBackLayout() {
-        return mDelegate.getSwipeBackLayout();
+    override fun getSwipeBackLayout(): SwipeBackLayout? {
+        return mDelegate.swipeBackLayout
     }
 
     /**
      * 是否可滑动
      * @param enable
      */
-    @Override
-    public void setSwipeBackEnable(boolean enable) {
-        mDelegate.setSwipeBackEnable(enable);
+    override fun setSwipeBackEnable(enable: Boolean) {
+        mDelegate.setSwipeBackEnable(enable)
     }
 
-    @Override
-    public void setEdgeLevel(SwipeBackLayout.EdgeLevel edgeLevel) {
-        mDelegate.setEdgeLevel(edgeLevel);
+    override fun setEdgeLevel(edgeLevel: EdgeLevel) {
+        mDelegate.setEdgeLevel(edgeLevel)
     }
 
-    @Override
-    public void setEdgeLevel(int widthPixel) {
-        mDelegate.setEdgeLevel(widthPixel);
+    override fun setEdgeLevel(widthPixel: Int) {
+        mDelegate.setEdgeLevel(widthPixel)
     }
 
     /**
@@ -59,8 +55,7 @@ public class SwipeBackActivity extends SupportActivity implements ISwipeBackActi
      *
      * @return true: Activity优先滑动退出;  false: Fragment优先滑动退出
      */
-    @Override
-    public boolean swipeBackPriority() {
-        return mDelegate.swipeBackPriority();
+    override fun swipeBackPriority(): Boolean {
+        return mDelegate.swipeBackPriority()
     }
 }
