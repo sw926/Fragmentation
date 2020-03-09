@@ -7,10 +7,7 @@ import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.util.DisplayMetrics
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
+import android.view.*
 import android.widget.FrameLayout
 import androidx.annotation.FloatRange
 import androidx.annotation.IntDef
@@ -25,6 +22,7 @@ import me.yokeyword.fragmentation_swipeback.core.ISwipeBackActivity
 import timber.log.Timber
 import java.util.*
 import kotlin.math.abs
+import kotlin.math.absoluteValue
 
 /**
  * Thx https://github.com/ikew0ng/SwipeBackLayout.
@@ -401,6 +399,7 @@ class SwipeBackLayout @JvmOverloads constructor(private val mContext: Context, a
     }
 
     private inner class ViewDragCallback : ViewDragHelper.Callback() {
+
         override fun tryCaptureView(child: View, pointerId: Int): Boolean {
             val dragEnable = viewDragHelper.isEdgeTouched(mEdgeFlag, pointerId)
             if (dragEnable) {
@@ -453,6 +452,8 @@ class SwipeBackLayout @JvmOverloads constructor(private val mContext: Context, a
             super.onViewPositionChanged(changedView, left, top, dx, dy)
             val contentView = mContentView ?: return
 
+            Timber.d("onViewPositionChanged: left=$left, top=$top, dx=$dx, dy=$dy")
+
             if (mCurrentSwipeOrientation and EDGE_LEFT != 0) {
                 mScrollPercent = abs(left.toFloat() / (contentView.width + (mShadowLeft?.intrinsicWidth
                         ?: 0)))
@@ -500,8 +501,8 @@ class SwipeBackLayout @JvmOverloads constructor(private val mContext: Context, a
             var left = 0
             val top = 0
             if (mCurrentSwipeOrientation and EDGE_LEFT != 0) {
-                left = if ((abs(xvel) > abs(yvel))
-                        && (xvel > 0 || xvel == 0f && mScrollPercent > mScrollFinishThreshold)) {
+                left = if ((abs(xvel) > abs(yvel) && xvel > 0)
+                        || (xvel == 0f && mScrollPercent > mScrollFinishThreshold)) {
                     childWidth + (mShadowLeft?.intrinsicWidth ?: 0) + OVERSCROLL_DISTANCE
                 } else {
                     0
