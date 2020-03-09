@@ -22,6 +22,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentationMagician
 import me.yokeyword.fragmentation_swipeback.R
 import me.yokeyword.fragmentation_swipeback.core.ISwipeBackActivity
+import timber.log.Timber
 import java.util.*
 import kotlin.math.abs
 
@@ -380,12 +381,16 @@ class SwipeBackLayout @JvmOverloads constructor(private val mContext: Context, a
             if (widthPixel >= 0) {
                 mEdgeSize.setInt(viewDragHelper, widthPixel)
             } else {
-                if (edgeLevel == EdgeLevel.MAX) {
-                    mEdgeSize.setInt(viewDragHelper, metrics.widthPixels)
-                } else if (edgeLevel == EdgeLevel.MED) {
-                    mEdgeSize.setInt(viewDragHelper, metrics.widthPixels / 2)
-                } else {
-                    mEdgeSize.setInt(viewDragHelper, (20 * metrics.density + 0.5f).toInt())
+                when (edgeLevel) {
+                    EdgeLevel.MAX -> {
+                        mEdgeSize.setInt(viewDragHelper, metrics.widthPixels)
+                    }
+                    EdgeLevel.MED -> {
+                        mEdgeSize.setInt(viewDragHelper, metrics.widthPixels / 2)
+                    }
+                    else -> {
+                        mEdgeSize.setInt(viewDragHelper, (20 * metrics.density + 0.5f).toInt())
+                    }
                 }
             }
         } catch (e: NoSuchFieldException) {
@@ -406,7 +411,6 @@ class SwipeBackLayout @JvmOverloads constructor(private val mContext: Context, a
                 }
                 mListeners?.forEach {
                     it.onEdgeTouch(mCurrentSwipeOrientation)
-
                 }
                 if (mPreFragment == null) {
                     (mFragment as? Fragment)?.let { f ->
@@ -462,6 +466,7 @@ class SwipeBackLayout @JvmOverloads constructor(private val mContext: Context, a
             if (mListeners != null && viewDragHelper.viewDragState == STATE_DRAGGING && mScrollPercent <= 1 && mScrollPercent > 0) {
                 mListeners?.forEach { it.onDragScrolled(mScrollPercent) }
             }
+
             if (mScrollPercent > 1) {
                 if (mFragment != null) {
                     if (mCallOnDestroyView) return
@@ -473,7 +478,7 @@ class SwipeBackLayout @JvmOverloads constructor(private val mContext: Context, a
                     mActivity?.let {
                         if (!it.isFinishing) {
                             onDragFinished()
-                            it.finish()
+                            it.onBackPressed()
                             it.overridePendingTransition(0, 0)
                         }
                     }
@@ -495,7 +500,8 @@ class SwipeBackLayout @JvmOverloads constructor(private val mContext: Context, a
             var left = 0
             val top = 0
             if (mCurrentSwipeOrientation and EDGE_LEFT != 0) {
-                left = if (xvel > 0 || xvel == 0f && mScrollPercent > mScrollFinishThreshold) {
+                left = if ((abs(xvel) > abs(yvel))
+                        && (xvel > 0 || xvel == 0f && mScrollPercent > mScrollFinishThreshold)) {
                     childWidth + (mShadowLeft?.intrinsicWidth ?: 0) + OVERSCROLL_DISTANCE
                 } else {
                     0
@@ -507,6 +513,7 @@ class SwipeBackLayout @JvmOverloads constructor(private val mContext: Context, a
                     0
                 }
             }
+            Timber.d("left=$left, top=$top, xvel=$xvel, yvel=$yvel")
             viewDragHelper.settleCapturedViewAt(left, top)
             invalidate()
         }
