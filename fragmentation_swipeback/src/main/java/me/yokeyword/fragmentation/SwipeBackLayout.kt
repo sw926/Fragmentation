@@ -401,6 +401,11 @@ class SwipeBackLayout @JvmOverloads constructor(private val mContext: Context, a
     private inner class ViewDragCallback : ViewDragHelper.Callback() {
 
         override fun tryCaptureView(child: View, pointerId: Int): Boolean {
+            if (isVerticalScroll) {
+                Timber.d("tryCaptureView: false, isVerticalScroll=$isVerticalScroll")
+                return false
+            }
+
             val dragEnable = viewDragHelper.isEdgeTouched(mEdgeFlag, pointerId)
             if (dragEnable) {
                 if (viewDragHelper.isEdgeTouched(EDGE_LEFT, pointerId)) {
@@ -540,9 +545,57 @@ class SwipeBackLayout @JvmOverloads constructor(private val mContext: Context, a
         }
     }
 
+    private var downX = Float.NaN
+    private var downY = Float.NaN
+    private var touchSlop = ViewConfiguration.get(context).scaledTouchSlop
+    private var isVerticalScroll = false
+
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        if (ev?.action == MotionEvent.ACTION_UP) {
+            isVerticalScroll = false
+            Timber.d("dispatchTouchEvent: ACTION_UP")
+        }
+        return super.dispatchTouchEvent(ev)
+    }
+
     override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
-        if (!mEnable) return super.onInterceptTouchEvent(ev)
+        if (!mEnable) {
+            return super.onInterceptTouchEvent(ev)
+        }
+        if (isVerticalScroll) {
+            return super.onInterceptTouchEvent(ev)
+        }
         try {
+            when (ev.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    isVerticalScroll = false
+                    downX = ev.x
+                    downY = ev.y
+                }
+                MotionEvent.ACTION_UP -> {
+                    isVerticalScroll = false
+                    downX = Float.NaN
+                    downY = Float.NaN
+                    Timber.d("onInterceptTouchEvent: ACTION_UP")
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    if (!isVerticalScroll) {
+                        if (downX.isNaN() || downY.isNaN()) {
+                            downY = ev.x
+                            downY = ev.y
+                        }
+                        if (!downX.isNaN() && !downY.isNaN()) {
+                            val dx = (ev.x - downX).absoluteValue
+                            val dy = (ev.y - downY).absoluteValue
+                            Timber.d("onInterceptTouchEvent: dx=$dx, dy=$dy, touchSlop=$touchSlop")
+                            if (dx > touchSlop || dy > touchSlop) {
+                                isVerticalScroll = dy >= dx
+                                Timber.d("onInterceptTouchEvent: scroll happen isVerticalScroll=$isVerticalScroll")
+                            }
+                        }
+                    }
+                }
+            }
             return viewDragHelper.shouldInterceptTouchEvent(ev)
         } catch (ignored: Exception) {
             ignored.printStackTrace()
@@ -552,7 +605,9 @@ class SwipeBackLayout @JvmOverloads constructor(private val mContext: Context, a
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        if (!mEnable) return super.onTouchEvent(event)
+        if (!mEnable) {
+            return super.onTouchEvent(event)
+        }
         try {
             viewDragHelper.processTouchEvent(event)
             return true
