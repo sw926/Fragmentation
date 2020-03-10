@@ -316,6 +316,10 @@ class SwipeBackLayout @JvmOverloads constructor(private val mContext: Context, a
         }
     }
 
+    fun isSwiped(): Boolean {
+        return mScrollPercent > 1
+    }
+
     /**
      * hide
      */
