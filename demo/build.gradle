@@ -54,14 +54,14 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     testImplementation 'junit:junit:4.13'
     api "androidx.appcompat:appcompat:$rootProject.appCompatVersion"
-    implementation 'com.google.android.material:material:1.0.0'
+    implementation 'com.google.android.material:material:1.1.0'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     api project(':fragmentation')
     api project(':fragmentation_swipeback')
     // EventBus
     api project(':eventbus_activity_scope')
-    implementation 'org.greenrobot:eventbus:3.1.1'
+    implementation 'org.greenrobot:eventbus:3.2.0'
     implementation 'com.jakewharton.timber:timber:4.7.1'
     //    apt 'org.greenrobot:eventbus-annotation-processor:3.0.1'
 }
