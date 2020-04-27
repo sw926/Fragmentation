@@ -425,12 +425,14 @@ class SwipeBackLayout @JvmOverloads constructor(private val mContext: Context, a
                         FragmentationMagician.getActiveFragments(f.fragmentManager)?.let { fragmentList ->
                             if (fragmentList.isNotEmpty()) {
                                 val index = fragmentList.indexOf(f)
-                                (index - 1 downTo 0).forEach { i ->
-                                    val fragment = fragmentList[i]
-                                    fragment.view?.let {
-                                        it.visibility = View.VISIBLE
-                                        mPreFragment = fragment
-                                        return@forEach
+                                kotlin.run {
+                                    (index - 1 downTo 0).forEach { i ->
+                                        val fragment = fragmentList[i]
+                                        fragment.view?.let {
+                                            it.visibility = View.VISIBLE
+                                            mPreFragment = fragment
+                                            return@run
+                                        }
                                     }
                                 }
                             }
